@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory & Sales Manager - Small Business</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .app-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem 2rem;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e0e0e0;
+      overflow-x: auto;
+    }
+    
+    .nav-tab {
+      flex: 1;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      border: none;
+      background: none;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    
+    .nav-tab.active {
+      color: #667eea;
+      border-bottom: 3px solid #667eea;
+      margin-bottom: -2px;
+    }
+    
+    .nav-tab:hover {
+      background: #f0f0f0;
+    }
+    
+    .content {
+      padding: 2rem;
+      display: none;
+    }
+    
+    .content.active {
+      display: block;
+    }
+    
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 2rem;
+    }
+    
+    .metric-card {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .metric-card.accent {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .metric-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+    
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+      margin: 1.5rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 13px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+      border: 2px solid #e0e0e0;
+    }
+    
+    .btn-secondary:hover {
+      background: #e8e8e8;
+    }
+    
+    .btn-danger {
+      background: #ff6b6b;
+      color: white;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+    
+    .btn-danger:hover {
+      background: #ff5252;
+    }
+    
+    .btn-success {
+      background: #51cf66;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #40c057;
+    }
+    
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .alert-danger {
+      background: #ffe0e0;
+      color: #d9534f;
+      border-left: 4px solid #d9534f;
+    }
+    
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border-left: 4px solid #28a745;
+    }
+    
+    .alert-warning {
+      background: #fff3cd;
+      color: #856404;
+      border-left: 4px solid #ffc107;
+    }
+    
+    .inventory-item {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border-left: 4px solid #667eea;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .inventory-item.low {
+      border-left-color: #ff6b6b;
+      background: #ffe0e0;
+    }
+    
+    .inventory-item.ok {
+      border-left-color: #51cf66;
+      background: #d4edda;
+    }
+    
+    .item-info {
+      flex: 1;
+    }
+    
+    .item-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    
+    .item-details {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .item-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: 1rem;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    .badge-low {
+      background: #ff6b6b;
+      color: white;
+    }
+    
+    .badge-ok {
+      background: #51cf66;
+      color: white;
+    }
+    
+    .quick-sale-item {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    
+    .quick-sale-header {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .quick-sale-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    
+    .quick-sale-controls input {
+      width: 80px;
+    }
+    
+    .quick-sale-controls button {
+      flex: 1;
+      margin: 0;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    
+    th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 13px;
+      color: #333;
+    }
+    
+    tr:hover {
+      background: #f8f9fa;
+    }
+    
+    .customer-row {
+      cursor: pointer;
+    }
+    
+    .customer-row:hover {
+      background: #e7f5ff;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #999;
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 1rem;
+      opacity: 0.3;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.3s;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .close-modal {
+      color: #999;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .close-modal:hover {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <h1><i class="fas fa-boxes"></i> Inventory Manager</h1>
+      <p>Smart inventory & sales tracking for small businesses</p>
+    </div>
+    
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</button>
+      <button class="nav-tab" onclick="switchTab('inventory')"><i class="fas fa-warehouse"></i> Inventory</button>
+      <button class="nav-tab" onclick="switchTab('sales')"><i class="fas fa-cash-register"></i> Quick Sale</button>
+      <button class="nav-tab" onclick="switchTab('customers')"><i class="fas fa-users"></i> Customers</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="content active">
+      <div class="metrics-row">
+        <div class="metric-card accent">
+          <div class="metric-label">Today's Sales</div>
+          <div class="metric-value">₹<span id="todaySales">0</span></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Items Sold</div>
+          <div class="metric-value"><span id="itemsSold">0</span></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Low Stock Items</div>
+          <div class="metric-value"><span id="lowStockCount">0</span></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Total Inventory Value</div>
+          <div class="metric-value">₹<span id="totalValue">0</span></div>
+        </div>
+      </div>
+
+      <div class="section-title"><i class="fas fa-exclamation-circle"></i> Stock Alerts</div>
+      <div id="alertsContainer"></div>
+
+      <div class="section-title"><i class="fas fa-fire"></i> Best Sellers Today</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity Sold</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody id="bestSellersTable">
+          <tr><td colspan="3" style="text-align: center; color: #999;">No sales yet today</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="inventory" class="content">
+      <div class="section-title"><i class="fas fa-plus-circle"></i> Add New Item</div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Item Name <span style="color: red;">*</span></label>
+          <input type="text" id="itemName" placeholder="e.g., Rice (1kg bag)">
+        </div>
+        <div class="form-group">
+          <label>Unit <span style="color: red;">*</span></label>
+          <input type="text" id="itemUnit" placeholder="kg, liter, piece, bag">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Current Quantity</label>
+          <input type="number" id="itemQty" placeholder="0" value="0">
+        </div>
+        <div class="form-group">
+          <label>Purchase Price (₹)</label>
+          <input type="number" id="itemCost" placeholder="0" step="0.5">
+        </div>
+        <div class="form-group">
+          <label>Selling Price (₹) <span style="color: red;">*</span></label>
+          <input type="number" id="itemPrice" placeholder="0" step="0.5">
+        </div>
+        <div class="form-group">
+          <label>Low Stock Alert Level</label>
+          <input type="number" id="itemAlert" placeholder="5" value="5">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="addItem()"><i class="fas fa-plus"></i> Add Item to Inventory</button>
+
+      <div class="section-title"><i class="fas fa-list"></i> Current Inventory</div>
+      <div id="inventoryList"></div>
+    </div>
+
+    <!-- QUICK SALE -->
+    <div id="sales" class="content">
+      <div class="section-title"><i class="fas fa-shopping-cart"></i> Record a Sale</div>
+      <p style="color: #666; margin-bottom: 1rem; font-size: 13px;">Select quantity and click "Sell" to record the transaction instantly.</p>
+      <div id="quickSalesContainer"></div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div id="customers" class="content">
+      <div class="section-title"><i class="fas fa-address-book"></i> Customer Purchases</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Customer Name</th>
+            <th>Total Spent</th>
+            <th>Purchases</th>
+            <th>Last Purchase</th>
+          </tr>
+        </thead>
+        <tbody id="customersTable">
+          <tr><td colspan="4" style="text-align: center; color: #999;">No customers yet</td></tr>
+        </tbody>
+      </table>
+      <div id="customerDetail" style="margin-top: 2rem; display: none;">
+        <h2 style="margin-bottom: 1rem; font-size: 16px;" id="customerName"></h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Item</th>
+              <th>Quantity</th>
+              <th>Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="customerHistory"></tbody>
+        </table>
+        <button class="btn btn-secondary" onclick="document.getElementById('customerDetail').style.display='none'" style="margin-top: 1rem;"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let data = {
+      items: [],
+      sales: [],
+      customers: []
+    };
+
+    function loadData() {
+      const saved = localStorage.getItem('inventoryData');
+      if (saved) {
+        data = JSON.parse(saved);
+      } else {
+        initDemoData();
+      }
+      render();
+    }
+
+    function initDemoData() {
+      data = {
+        items: [
+          { id: 1, name: 'Rice (5kg)', unit: 'bag', qty: 8, cost: 150, price: 200, alert: 5 },
+          { id: 2, name: 'Dal (1kg)', unit: 'kg', qty: 2, cost: 80, price: 120, alert: 3 },
+          { id: 3, name: 'Cooking Oil', unit: 'liter', qty: 12, cost: 90, price: 140, alert: 5 },
+          { id: 4, name: 'Salt (1kg)', unit: 'kg', qty: 6, cost: 20, price: 40, alert: 2 },
+          { id: 5, name: 'Sugar (1kg)', unit: 'kg', qty: 3, cost: 40, price: 60, alert: 2 }
+        ],
+        sales: [
+          { itemId: 1, customerId: 1, qty: 1, amount: 200, date: new Date().toLocaleDateString() },
+          { itemId: 3, customerId: 1, qty: 1, amount: 140, date: new Date().toLocaleDateString() },
+          { itemId: 2, customerId: 2, qty: 2, amount: 240, date: new Date().toLocaleDateString() },
+          { itemId: 4, customerId: 2, qty: 1, amount: 40, date: new Date().toLocaleDateString() }
+        ],
+        customers: [
+          { id: 1, name: 'Ramesh Kumar', phone: '98765-43210', spent: 340, count: 2, lastBuy: new Date().toLocaleDateString() },
+          { id: 2, name: 'Priya Singh', phone: '98765-43211', spent: 280, count: 2, lastBuy: new Date().toLocaleDateString() }
+        ]
+      };
+    }
+
+    function saveData() {
+      localStorage.setItem('inventoryData', JSON.stringify(data));
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+      render();
+    }
+
+    function addItem() {
+      const name = document.getElementById('itemName').value?.trim();
+      const qty = parseInt(document.getElementById('itemQty').value) || 0;
+      const unit = document.getElementById('itemUnit').value?.trim();
+      const cost = parseFloat(document.getElementById('itemCost').value) || 0;
+      const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+      const alert = parseInt(document.getElementById('itemAlert').value) || 5;
+
+      if (!name || !unit || !price) {
+        alert('⚠️ Please fill in: Item Name, Unit, and Selling Price');
+        return;
+      }
+
+      data.items.push({
+        id: Date.now(),
+        name,
+        unit,
+        qty: Math.round(qty),
+        cost: Math.round(cost * 100) / 100,
+        price: Math.round(price * 100) / 100,
+        alert
+      });
+
+      saveData();
+      document.getElementById('itemName').value = '';
+      document.getElementById('itemQty').value = '0';
+      document.getElementById('itemUnit').value = '';
+      document.getElementById('itemCost').value = '';
+      document.getElementById('itemPrice').value = '';
+      document.getElementById('itemAlert').value = '5';
+      render();
+      alert('✅ Item added successfully!');
+    }
+
+    function deleteItem(itemId) {
+      if (confirm('Delete this item from inventory?')) {
+        data.items = data.items.filter(i => i.id !== itemId);
+        saveData();
+        render();
+      }
+    }
+
+    function recordSale(itemId, qty) {
+      const item = data.items.find(i => i.id === itemId);
+      if (!item) return;
+      if (item.qty < qty) {
+        alert(`⚠️ Only ${item.qty} ${item.unit} available!`);
+        return;
+      }
+
+      item.qty -= qty;
+      const amount = Math.round(item.price * qty * 100) / 100;
+      data.sales.push({
+        itemId,
+        customerId: null,
+        qty,
+        amount,
+        date: new Date().toLocaleDateString()
+      });
+      saveData();
+      render();
+      alert(`✅ Sale recorded: ${qty} x ${item.name}`);
+    }
+
+    function render() {
+      renderDashboard();
+      renderInventory();
+      renderQuickSales();
+      renderCustomers();
+    }
+
+    function renderDashboard() {
+      const today = new Date().toLocaleDateString();
+      const todaySales = data.sales.filter(s => s.date === today);
+      const totalSales = Math.round(todaySales.reduce((sum, s) => sum + s.amount, 0) * 100) / 100;
+      const totalQty = todaySales.reduce((sum, s) => sum + s.qty, 0);
+      const lowStock = data.items.filter(i => i.qty < i.alert).length;
+      const totalValue = Math.round(data.items.reduce((sum, i) => sum + (i.qty * i.price), 0) * 100) / 100;
+
+      document.getElementById('todaySales').textContent = totalSales;
+      document.getElementById('itemsSold').textContent = totalQty;
+      document.getElementById('lowStockCount').textContent = lowStock;
+      document.getElementById('totalValue').textContent = totalValue;
+
+      const alerts = data.items
+        .filter(i => i.qty < i.alert)
+        .map(i => `
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
+            <div>
+              <strong>${i.name}</strong> is running low!<br>
+              <small>Only ${i.qty} ${i.unit} left (alert: ${i.alert} ${i.unit})</small>
+            </div>
+          </div>
+        `)
+        .join('');
+      
+      document.getElementById('alertsContainer').innerHTML = alerts || 
+        '<div class="empty-state"><div class="empty-state-icon">✓</div><p>All items are in stock</p></div>';
+
+      const bestSellers = {};
+      todaySales.forEach(s => {
+        const item = data.items.find(i => i.id === s.itemId);
+        if (item) {
+          if (!bestSellers[item.name]) bestSellers[item.name] = { qty: 0, revenue: 0 };
+          bestSellers[item.name].qty += s.qty;
+          bestSellers[item.name].revenue += s.amount;
+        }
+      });
+
+      const rows = Object.entries(bestSellers)
+        .sort((a, b) => b[1].revenue - a[1].revenue)
+        .slice(0, 5)
+        .map(([name, data]) => `
+          <tr>
+            <td>${name}</td>
+            <td>${data.qty}</td>
+            <td><strong>₹${Math.round(data.revenue * 100) / 100}</strong></td>
+          </tr>
+        `)
+        .join('');
+      
+      document.getElementById('bestSellersTable').innerHTML = rows || 
+        '<tr><td colspan="3" style="text-align: center; color: #999;">No sales yet</td></tr>';
+    }
+
+    function renderInventory() {
+      const html = data.items
+        .map(item => {
+          const status = item.qty < item.alert ? 'low' : 'ok';
+          const badge = status === 'low' 
+            ? '<span class="badge badge-low">⚠️ LOW</span>'
+            : '<span class="badge badge-ok">✓ OK</span>';
+          return `
+            <div class="inventory-item ${status}">
+              <div class="item-info">
+                <div class="item-name">${item.name} ${badge}</div>
+                <div class="item-details">
+                  Stock: ${item.qty} ${item.unit} | Price: ₹${Math.round(item.price * 100) / 100} | Alert at: ${item.alert} ${item.unit}
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="btn btn-danger" onclick="deleteItem(${item.id})"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+      
+      document.getElementById('inventoryList').innerHTML = html || 
+        '<div class="empty-state"><div class="empty-state-icon">📦</div><p>No items yet. Add your first item above!</p></div>';
+    }
+
+    function renderQuickSales() {
+      const html = data.items
+        .map(item => `
+          <div class="quick-sale-item">
+            <div class="quick-sale-header">
+              <span>${item.name}</span>
+              <span style="color: #667eea; font-weight: 700;">₹${Math.round(item.price * 100) / 100}</span>
+            </div>
+            <div style="font-size: 12px; color: #666; margin-bottom: 8px;">Stock: ${item.qty} ${item.unit}</div>
+            <div class="quick-sale-controls">
+              <input type="number" id="qty-${item.id}" min="1" max="${Math.max(1, item.qty)}" value="1" placeholder="Qty">
+              <button class="btn btn-success" onclick="recordSale(${item.id}, parseInt(document.getElementById('qty-${item.id}').value) || 1)">
+                <i class="fas fa-check"></i> Sell
+              </button>
+            </div>
+          </div>
+        `)
+        .join('');
+      
+      document.getElementById('quickSalesContainer').innerHTML = html || 
+        '<div class="empty-state"><div class="empty-state-icon">🛒</div><p>Add items to inventory first</p></div>';
+    }
+
+    function renderCustomers() {
+      const rows = data.customers
+        .map(c => `
+          <tr class="customer-row" onclick="showCustomerDetail(${c.id})">
+            <td><strong>${c.name}</strong></td>
+            <td>₹${Math.round(c.spent * 100) / 100}</td>
+            <td>${c.count}</td>
+            <td>${c.lastBuy}</td>
+          </tr>
+        `)
+        .join('');
+      
+      document.getElementById('customersTable').innerHTML = rows || 
+        '<tr><td colspan="4" style="text-align: center; color: #999;">No customers yet</td></tr>';
+    }
+
+    function showCustomerDetail(customerId) {
+      const customer = data.customers.find(c => c.id === customerId);
+      const sales = data.sales.filter(s => s.customerId === customerId);
+      
+      document.getElementById('customerName').textContent = `${customer.name} (${customer.phone})`;
+      document.getElementById('customerHistory').innerHTML = sales
+        .map(s => {
+          const item = data.items.find(i => i.id === s.itemId);
+          return `
+            <tr>
+              <td>${s.date}</td>
+              <td>${item?.name}</td>
+              <td>${s.qty} ${item?.unit}</td>
+              <td>₹${Math.round(s.amount * 100) / 100}</td>
+            </tr>
+          `;
+        })
+        .join('') || '<tr><td colspan="4" style="text-align: center;">No purchases</td></tr>';
+      
+      document.getElementById('customerDetail').style.display = 'block';
+    }
+
+    // Make switchTab work correctly
+    document.querySelectorAll('.nav-tab').forEach((btn, idx) => {
+      btn.addEventListener('click', function() {
+        const tabs = ['dashboard', 'inventory', 'sales', 'customers'];
+        document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabs[idx]).classList.add('active');
+        this.classList.add('active');
+      });
+    });
+
+    // Load data on startup
+    loadData();
+  </script>
+</body>
+</html>
